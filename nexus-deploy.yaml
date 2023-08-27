@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    cluster: test1
+    app: nexus
+  name: nexus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexus
+  template:
+    metadata:
+      labels:
+        app: nexus
+        tier: debug
+    spec:
+      containers:
+      - image: sonatype/nexus3 
+        name: nexus
+        volumeMounts:
+        - name: data-vol
+          mountPath: /nexus-data
+          subPath: nexus-data
+        resources:
+          limits:
+            cpu: "1"
+          requests:
+            cpu: "1"
+      volumes:
+      - name: data-vol
+        persistentVolumeClaim:
+          claimName: local-pvc
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexus-svc
+  labels:
+    app: nexus
+    tier: debug
+spec:
+  type: NodePort
+  selector:
+    app: nexus
+  ports:
+  - port: 8081
+    targetPort: 8081
+    nodePort: 30081

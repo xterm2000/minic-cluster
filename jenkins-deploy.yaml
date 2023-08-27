@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    cluster: test1
+    app: jenkins
+  name: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+        tier: debug
+    spec:
+      containers:
+      - image: jenkins/jenkins:lts-jdk11
+        name: jenkins
+        volumeMounts:
+        - name: data-vol
+          mountPath: /var/jenkins_home
+          subPath: jenkins-data
+      volumes:
+      - name: data-vol
+        persistentVolumeClaim:
+          claimName: local-pvc
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-svc
+  labels:
+    app: jenkins
+    tier: debug
+spec:
+  type: NodePort
+  selector:
+    app: jenkins
+
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 31234
