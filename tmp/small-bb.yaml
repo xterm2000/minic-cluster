@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: bb
+  name: bb
+spec:
+  containers:
+  - name: bb
+    image: busybox
+    name: bb
+    volumeMounts:
+    - mountPath: "/home/data"
+      name: myv
+    command:
+    - sleep
+    - "1000"
+  restartPolicy: Never
+  volumes:
+  - name: myv
+    persistentVolumeClaim:
+      claimName: local-pvc

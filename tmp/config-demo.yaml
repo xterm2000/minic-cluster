@@ -1,0 +1,26 @@
+apiVersion: v1
+clusters:
+- cluster:
+  server: "http://127.0.0.1:6443"
+  name: development
+contexts:
+- context:
+    cluster: ""
+    user: ""
+  name: dev-frontend
+- context:
+    cluster: ""
+    user: ""
+  name: dev-storage
+- context:
+    cluster: "development"
+    user: "developer"
+  name: exp-test
+current-context: ""
+users:
+- name: developer
+  user:
+    client-certificate: pki/dev-user.crt
+    client-key: pki/dev-user.key
+- name: experimenter
+  user: {}
