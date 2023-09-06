@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: pgadmin
+    cluster: test1
+  name: pgadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin
+  template:
+    metadata:
+      name: babajan
+      labels:
+        app: pgadmin
+        tier: debug
+    spec:
+      containers:
+      - env:
+        - name: PGADMIN_DEFAULT_PASSWORD
+          value: postgres
+        - name: PGADMIN_DEFAULT_EMAIL
+          value: babajan@biberman.ac.il
+        image: dpage/pgadmin4
+        name: pgadmin
+        volumeMounts:
+        - name: pg-vol
+          mountPath: /pgadmin4/config_local.py
+          subPath: pgadmin-data
+      volumes:
+      - name: pg-vol
+        persistentVolumeClaim:
+          claimName: local-pvc
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin-svc
+  labels:
+    app: pgadmin
+    tier: debug
+spec:
+  type: NodePort
+  selector:
+    app: pgadmin
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30082
