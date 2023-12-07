@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: phpmyadmin-http-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http: 
+      paths:
+      - path: /php
+        pathType: Prefix
+        backend:
+          service:
+           name: phpmyadmin-svc
+           port: 
+             number: 30056

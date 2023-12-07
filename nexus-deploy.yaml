@@ -47,6 +47,11 @@ spec:
   selector:
     app: nexus
   ports:
+  - port: 8082
+    name: docker-port
+    targetPort: 8082
+    nodePort: 30083
   - port: 8081
+    name: ui-port
     targetPort: 8081
     nodePort: 30081
